@@ -160,13 +160,16 @@ export class VulnerabilitiesService {
             item.cve.descriptions[0].value;
 
           const threatPrompt = `In layman's terms without using the 'in simple terms' words, provide the threat from the description: ${vulnerability}`;
-          const impactPrompt = `In layman's terms without using the 'in simple terms' words, what is the level of impact of the vulnerability as described: ${vulnerability}`;
+          const impactPrompt = `In layman's terms without using the 'in simple terms' words, what is the potential impact of the vulnerability as described: ${vulnerability}`;
           const recommendationPrompt = `In layman's terms without using the 'in simple terms' words, provide recommendation for mitigating the threats with the description: ${vulnerability}`;
+          const affectedSystemPrompt = `In layman's terms without using the 'in simple terms' words, list the affected systems from the description: ${vulnerability}`;
 
           const threats = await this.generateThreatAssessment(threatPrompt);
           const recommendations =
             await this.generateThreatAssessment(recommendationPrompt);
           const impact = await this.generateThreatAssessment(impactPrompt);
+          const affectedSystem =
+            await this.generateThreatAssessment(affectedSystemPrompt);
 
           if (!exists) {
             const newVuln = this.vulnerabilityRepository.create({
@@ -178,6 +181,7 @@ export class VulnerabilitiesService {
               references: item.cve.references.map((reference) => reference.url),
               metrics: allMetrics,
               impact,
+              affectedSystem,
               threats,
               recommendations,
             });
