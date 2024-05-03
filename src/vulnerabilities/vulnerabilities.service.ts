@@ -155,14 +155,15 @@ export class VulnerabilitiesService {
             allMetrics.push(mappedMetrics);
           });
 
-          const vulnerability =
+          const description =
             item.cve.descriptions.find((d) => d.lang === 'en')?.value ||
             item.cve.descriptions[0].value;
 
-          const threatPrompt = `In layman's terms without using the 'in simple terms' words, provide the threat from the description: ${vulnerability}`;
-          const impactPrompt = `In layman's terms without using the 'in simple terms' words, what is the potential impact of the vulnerability as described: ${vulnerability}`;
-          const recommendationPrompt = `In layman's terms without using the 'in simple terms' words, provide recommendation for mitigating the threats with the description: ${vulnerability}`;
-          const affectedSystemPrompt = `In layman's terms without using the 'in simple terms' words, list the affected systems from the description: ${vulnerability}`;
+          const threatPrompt = `Be concised and in layman's terms without starting with the "the threat" or "in simple terms" words, what is the threat from the description: ${description}.`;
+          const impactPrompt = `Be concised and in layman's terms without starting with the "the impact of the vulnerability" or "the potential impact of the vulnerability" or "in simple terms" words, what is the potential impact of the vulnerability as described: ${description}.`;
+          const recommendationPrompt = `Be concised and in a layman's terms without using the 'in simple terms' words, provide recommendation for mitigating the threats with the description: ${description}.`;
+          const affectedSystemPrompt = `From the description: "${description}", be concised and in a layman's terms without using the "in simple terms" or "the affected systems" words, just list the affected systems.`;
+          const vulnerabilityPrompt = `From the description: "${description}", without using the "the device is vulnerable" words, the device is vulnerable to what? Please be concised.`;
 
           const threats = await this.generateThreatAssessment(threatPrompt);
           const recommendations =
@@ -170,6 +171,8 @@ export class VulnerabilitiesService {
           const impact = await this.generateThreatAssessment(impactPrompt);
           const affectedSystem =
             await this.generateThreatAssessment(affectedSystemPrompt);
+          const vulnerability =
+            await this.generateThreatAssessment(vulnerabilityPrompt);
 
           if (!exists) {
             const newVuln = this.vulnerabilityRepository.create({
