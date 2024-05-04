@@ -29,9 +29,9 @@ export class VulnerabilitiesService {
   async generateThreatAssessment(prompt: string): Promise<string> {
     try {
       const response = await this.openAI.chat.completions.create({
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4',
         messages: [{ role: 'user', content: prompt }],
-        temperature: 0.7,
+        temperature: 0.5,
         max_tokens: 50,
       });
       return response.choices[0].message.content;
@@ -159,11 +159,11 @@ export class VulnerabilitiesService {
             item.cve.descriptions.find((d) => d.lang === 'en')?.value ||
             item.cve.descriptions[0].value;
 
-          const threatPrompt = `Be concised and in layman's terms without starting with the "the threat" or "in simple terms" words, what is the threat from the description: ${description}.`;
-          const impactPrompt = `Be concised and in layman's terms without starting with the "the impact of the vulnerability" or "the potential impact of the vulnerability" or "in simple terms" words, what is the potential impact of the vulnerability as described: ${description}.`;
-          const recommendationPrompt = `Be concised and in a layman's terms without using the 'in simple terms' words, provide recommendation for mitigating the threats with the description: ${description}.`;
-          const affectedSystemPrompt = `From the description: "${description}", be concised and in a layman's terms without using the "in simple terms" or "the affected systems" words, just list the affected systems.`;
-          const vulnerabilityPrompt = `From the description: "${description}", without using the "the device is vulnerable" words, the device is vulnerable to what? Please be concised.`;
+          const threatPrompt = `Threat is a negative or malicious event that can exploit a vulnerability. From this definition, without starting with the words; "The threat is..." or "In simple terms...". Be concised and state the threat in: "${description}"?`;
+          const impactPrompt = `Be concised and in layman's terms without starting with the words: "The impact of the vulnerability..." or "The potential impact of the vulnerability..." or "In simple terms...", what is the potential impact in: "${description}"?`;
+          const recommendationPrompt = `Be concised and in a layman's terms without starting with the "In simple terms..." or "I recommend..." words, provide recommendation for mitigating the threats with the description: ${description}.`;
+          const affectedSystemPrompt = `Without starting with the words: "In simple terms..." or "The affected systems...", just only list the affected systems in: "${description}".`;
+          const vulnerabilityPrompt = `Vulnerability is a lopehole or weakness in a device that can be exploited. From this definition, without starting with the words; "The vulnerability name is..." or "The device is vulnerable to...". Just give the name of the vulnerability in "${description}".`;
 
           const threats = await this.generateThreatAssessment(threatPrompt);
           const recommendations =
