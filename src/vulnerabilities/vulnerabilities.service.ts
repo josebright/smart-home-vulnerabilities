@@ -32,7 +32,7 @@ export class VulnerabilitiesService {
         model: 'gpt-4',
         messages: [{ role: 'user', content: prompt }],
         temperature: 0.5,
-        max_tokens: 50,
+        max_tokens: 100,
       });
       return response.choices[0].message.content;
     } catch (error) {
