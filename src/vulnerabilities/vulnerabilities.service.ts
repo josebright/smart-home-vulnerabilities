@@ -31,8 +31,8 @@ export class VulnerabilitiesService {
       const response = await this.openAI.chat.completions.create({
         model: 'gpt-4',
         messages: [{ role: 'user', content: prompt }],
-        temperature: 0.5,
-        max_tokens: 100,
+        temperature: 0.3,
+        max_tokens: 250,
       });
       return response.choices[0].message.content;
     } catch (error) {
